@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'root',
-    'password': '',
+    'password': 'root',
     'database': 'hospital_management'
 }
 
 def connect_db():
     """Connects to the hospital_management MySQL database."""
-    return mysql.connector.connect(**DB_CONFIG)
+    return mysql.connector.connect(**DB_CONFIG,port='3307')
 
 def menu():
     """Displays the hospital management system menu."""
@@ -56,7 +56,7 @@ def add_new_doctor():
     cursor.execute("INSERT INTO department VALUES (%s, %s, %s, %s)", 
                    (doctor_id, name, department, phone))
     conn.commit()
-    print("✅ Doctor Added Successfully!")
+    print(" Doctor Added Successfully!")
     conn.close()
 
 def sort_doctors():
@@ -77,9 +77,9 @@ def delete_patient_column():
     """Deletes the 'age' column from the patients table (if exists)."""
     conn = connect_db()
     cursor = conn.cursor()
-    cursor.execute("ALTER TABLE patients DROP COLUMN IF EXISTS age")
+    cursor.execute("ALTER TABLE patients DROP COLUMN disease ")
     conn.commit()
-    print("✅ Age column deleted (if it existed).")
+    print("disease column deleted (if it existed).")
     conn.close()
 
 def display_bills():
@@ -92,8 +92,8 @@ def display_bills():
 def display_total_bills():
     """Calculates and displays total bills."""
     conn = connect_db()
-    df = pd.read_sql("SELECT *, (d_visit + medicine + toopv) AS total_bill FROM hbills", conn)
-    print(df[['id', 'd_visit', 'medicine', 'toopv', 'total_bill']])
+    df = pd.read_sql("SELECT *,sum(d_visit) +  sum(medicine)+ sum(toopv) AS total_bill FROM hbills", conn)
+    print(df[['bill_id', 'total_bill']])
     conn.close()
 
 def increase_doctor_fee():
@@ -102,7 +102,7 @@ def increase_doctor_fee():
     cursor = conn.cursor()
     cursor.execute("UPDATE hbills SET d_visit = d_visit + 250")
     conn.commit()
-    print("✅ Doctor visit charges increased by Rs 250!")
+    print("Doctor visit charges increased by Rs 250!")
     conn.close()
 
 def display_workers():
@@ -125,7 +125,7 @@ def increase_worker_salary():
     cursor = conn.cursor()
     cursor.execute("UPDATE workers SET salary = salary + 250")
     conn.commit()
-    print("✅ Workers' salaries increased by Rs 250!")
+    print("Workers' salaries increased by Rs 250!")
     conn.close()
 
 def hbill_bar_plot():
@@ -175,4 +175,4 @@ if __name__ == "__main__":
             print("Exiting program. Goodbye!")
             break
         else:
-            print("❌ Invalid choice! Please enter a valid option.")
+            print("Invalid choice! Please enter a valid option.")

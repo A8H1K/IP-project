@@ -1,35 +1,17 @@
-import mysql.connector
+import mysql.connector 
+conn = mysql.connector.connect(host= 'localhost',user= 'root', password='root', database='hospital_management',port=3307)
+print("1")
+cursor = conn.cursor()
 
-# MySQL Database Connection Configuration
-DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'hospital_management'
-}
-
-def connect_db():
-    """Establish connection to the MySQL database."""
-    return mysql.connector.connect(**DB_CONFIG)
-
-def create_tables():
-    """Creates tables if they do not exist."""
-    conn = connect_db()
-    cursor = conn.cursor()
-
-    # Create Doctors Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS department (
+cursor.execute("""CREATE TABLE department (
             doctor_id VARCHAR(10) PRIMARY KEY,
             doctor_name VARCHAR(100),
             department VARCHAR(50),
             doctor_phone VARCHAR(15)
-        )
-    """)
+        )""")
 
-    # Create Patients Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS patients (
+cursor.execute("""
+        CREATE TABLE patients (
             patient_id INT AUTO_INCREMENT PRIMARY KEY,
             patient_name VARCHAR(100),
             age INT,
@@ -39,9 +21,8 @@ def create_tables():
         )
     """)
 
-    # Create Bills Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS hbills (
+cursor.execute("""
+        CREATE TABLE hbills (
             bill_id INT AUTO_INCREMENT PRIMARY KEY,
             d_visit FLOAT,
             medicine FLOAT,
@@ -52,9 +33,9 @@ def create_tables():
         )
     """)
 
-    # Create Workers Table
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS workers (
+
+cursor.execute("""
+        CREATE TABLE workers (
             worker_id INT AUTO_INCREMENT PRIMARY KEY,
             worker_name VARCHAR(100),
             position VARCHAR(100),
@@ -62,14 +43,12 @@ def create_tables():
         )
     """)
 
-    conn.commit()
-    print("✅ Tables created successfully!")
-    conn.close()
-
+conn.commit()
+print("✅ Tables created successfully!")
+conn.close()
 def insert_mock_data():
     """Inserts mock data for testing."""
-    conn = connect_db()
-    cursor = conn.cursor()
+
 
     # Insert mock data into Doctors table
     cursor.execute("""
@@ -112,5 +91,4 @@ def insert_mock_data():
     conn.close()
 
 if __name__ == "__main__":
-    create_tables()
     insert_mock_data()
